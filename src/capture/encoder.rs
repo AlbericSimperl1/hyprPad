@@ -125,12 +125,12 @@ impl Encoder {
         }
     }
 
-    pub fn is_alive(&mut self) -> bool {
-        match self.child.try_wait() {
-            Ok(None) => true,
-            _ => false,
-        }
-    }
+    // pub fn is_alive(&mut self) -> bool {
+    //     match self.child.try_wait() {
+    //         Ok(None) => true,
+    //         _ => false,
+    //     }
+    // }
 }
 
 impl Drop for Encoder {
