@@ -1,6 +1,6 @@
 # Hyprpad: High-Performance Wayland Display Extension
 
-**Hyprpad** is a Linux-native utility that turns a tablet (iPad/Android) into a second monitor for Hyprland users. Instead of traditional, slow screen-capture methods, Hyprpad utilizes direct hardware-pipeline integration to establish an extremely low-latency stream over UDP.
+**Hyprpad** is a Hyprland-native utility that turns a tablet (iPad/Android) into a second monitor for Hyprland users. Instead of traditional, slow screen-capture methods, Hyprpad utilizes direct hardware-pipeline integration to establish an extremely low-latency stream over UDP.
 
 ## Architecture & Concept
 
