@@ -137,6 +137,22 @@ mod hyprland {
     }
 }
 
+/// Pollt `hyprctl monitors -j` tot `name` erin verschijnt, of tot `timeout`
+/// verstrijkt. Geeft `true` terug zodra het scherm zichtbaar is. Dit garandeert
+/// dat de screencast-portal de nieuwe output kent vóór we een capture starten.
+fn wait_for_monitor(name: &str, timeout: Duration) -> bool {
+    let deadline = std::time::Instant::now() + timeout;
+    while std::time::Instant::now() < deadline {
+        if let Ok(mons) = hyprland::get_monitors() {
+            if mons.iter().any(|m| m.name == name) {
+                return true;
+            }
+        }
+        std::thread::sleep(Duration::from_millis(150));
+    }
+    false
+}
+
 // ─── Application State ────────────────────────────────────────
 
 struct App {
@@ -151,6 +167,11 @@ struct App {
     capture_output_path: String,
     /// Receiver for the final status after a background stop completes.
     stop_result_rx: Option<mpsc::Receiver<capture::CaptureStatus>>,
+    /// Receiver for the result of a background monitor-create. Wanneer de
+    /// create slaagt, start de GUI-thread automatisch de capture — pas dan
+    /// heeft Hyprland/xdg-desktop-portal de nieuwe output geregistreerd, wat
+    /// nodig is voor een correcte portal-kiezer.
+    create_result_rx: Option<mpsc::Receiver<Result<String, String>>>,
     /// Toont het bevestigingsvenster voordat het scherm + capture starten.
     show_create_confirm: bool,
 }
@@ -167,9 +188,13 @@ impl App {
             capture: None,
             capture_output_path: default_capture_path(),
             stop_result_rx: None,
+            create_result_rx: None,
             show_create_confirm: false,
         };
-        app.log("Hyprland Virtual Display controller started.", LogLevel::Info);
+        app.log(
+            "Hyprland Virtual Display controller started.",
+            LogLevel::Info,
+        );
         app.refresh();
         app
     }
@@ -221,8 +246,14 @@ impl App {
         self.show_create_confirm = true;
     }
 
-    /// Wordt pas aangeroepen nadat de gebruiker in het bevestigingsvenster op
-    /// OK heeft geklikt. Maakt het scherm aan én start direct de capture.
+    /// Wordt aangeroepen nadat de gebruiker in het bevestigingsvenster op OK
+    /// heeft geklikt. Maakt het scherm aan **op een achtergrond-thread** (samen
+    /// met de hyprctl-aanroepen), zodat:
+    ///   1. de GUI-thread niet blokkeert op `hyprctl`, en
+    ///   2. we de capture pas starten nadat Hyprland/xdg-desktop-portal de
+    ///      nieuwe headless output geregistreerd hebben — anders opent de
+    ///      portal-kiezer pas veel later (bv. wanneer het scherm weer weggaat).
+    /// Het resultaat wordt gepolleerd door `poll_create_result`.
     fn confirm_create(&mut self) {
         let name = self.config.name.clone();
         let kw = self.config.to_keyword();
@@ -231,33 +262,76 @@ impl App {
             LogLevel::Info,
         );
 
-        match hyprland::create_monitor(&self.config) {
-            Ok(out) => {
+        let cfg = self.config.clone();
+        let (tx, rx) = mpsc::channel();
+        self.create_result_rx = Some(rx);
+
+        std::thread::spawn(move || {
+            let res = hyprland::create_monitor(&cfg);
+
+            if res.is_ok() {
+                // `hyprctl output create headless` keert terug VÓÓRdat Hyprland
+                // de output aan xdg-desktop-portal heeft doorgegeven. De
+                // screencast-portal heeft dan nog geen bron → de kiezer
+                // verschijnt pas veel later (bv. bij het sluiten van de
+                // stream). Poll dus tot het scherm écht in de monitorlijst
+                // staat, plus een kleine buffer voor portal-propagatie.
+                wait_for_monitor(&cfg.name, Duration::from_secs(5));
+                std::thread::sleep(Duration::from_millis(400));
+            }
+            let _ = tx.send(res);
+        });
+    }
+
+    /// Pollt het resultaat van de achtergrond-create. Wordt elke GUI-frame
+    /// aangeroepen. Bij succes: loggen, monitorlijst verversen, en capture
+    /// starten.
+    fn poll_create_result(&mut self) {
+        let rx = match &self.create_result_rx {
+            Some(rx) => rx,
+            None => return,
+        };
+        match rx.try_recv() {
+            Ok(Ok(out)) => {
+                self.create_result_rx = None;
+                let name = self.config.name.clone();
                 self.log(
                     format!("✓ Monitor '{name}' created. {}", out.trim()),
                     LogLevel::Success,
                 );
                 self.refresh();
-                // Geen reden om een monitor te maken zonder capture — dus meteen starten.
                 self.do_start_capture();
             }
-            Err(e) => {
+            Ok(Err(e)) => {
+                self.create_result_rx = None;
                 self.log(format!("⚠ {e}"), LogLevel::Warning);
                 self.refresh();
+            }
+            Err(mpsc::TryRecvError::Empty) => {
+                // Nog bezig.
+            }
+            Err(mpsc::TryRecvError::Disconnected) => {
+                self.create_result_rx = None;
+                self.log(
+                    "✗ Create monitor thread ended unexpectedly.",
+                    LogLevel::Error,
+                );
             }
         }
     }
 
     fn do_remove(&mut self) {
         // Capture eerst netjes afsluiten (het virtuele scherm verdwijnt toch).
-        if self.capture.as_ref().map_or(false, |c| c.is_running())
-            || self.stop_result_rx.is_some()
+        if self.capture.as_ref().map_or(false, |c| c.is_running()) || self.stop_result_rx.is_some()
         {
             self.do_stop_capture();
         }
 
         let name = self.config.name.clone();
-        self.log(format!("▶ Removing virtual monitor '{name}'..."), LogLevel::Info);
+        self.log(
+            format!("▶ Removing virtual monitor '{name}'..."),
+            LogLevel::Info,
+        );
 
         match hyprland::remove_monitor(&name) {
             Ok(out) => {
@@ -397,9 +471,14 @@ impl eframe::App for App {
             .map(|c| c.is_running())
             .unwrap_or(false);
         let stopping = self.stop_result_rx.is_some();
-        if capturing || stopping {
+        let creating = self.create_result_rx.is_some();
+        if capturing || stopping || creating {
             ctx.request_repaint_after(Duration::from_millis(250));
         }
+
+        // Poll the background create result (non-blocking). Opent na succes
+        // automatisch de capture + portal-kiezer.
+        self.poll_create_result();
 
         // Poll the background stop result (non-blocking).
         self.poll_stop_result();
@@ -754,10 +833,7 @@ impl eframe::App for App {
 
                     ui.horizontal(|ui| {
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                            if ui
-                                .button(egui::RichText::new("✅  OK").strong())
-                                .clicked()
-                            {
+                            if ui.button(egui::RichText::new("✅  OK").strong()).clicked() {
                                 clicked_ok = true;
                             }
                             if ui.button("Cancel").clicked() {
