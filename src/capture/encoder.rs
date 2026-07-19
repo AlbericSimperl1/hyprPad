@@ -13,10 +13,44 @@ impl Encoder {
     pub fn start(width: u32, height: u32, fps: u32, output_path: &str) -> Result<Self, String> {
         let size = format!("{width}x{height}");
         let rate = format!("{fps}");
+        // let ipad_udp_url = "udp://172.20.10.1:1234?pkt_size=1316";
+        let ipad_udp_url = "udp://127.0.0.1:1234?pkt_size=1316"; // local for rust debugging
 
         let mut child = Command::new("ffmpeg")
             // raw video input
+            // .args([
+            //     "-y",
+            //     "-f",
+            //     "rawvideo",
+            //     "-pixel_format",
+            //     "bgr0",
+            //     "-video_size",
+            //     &size,
+            //     "-framerate",
+            //     &rate,
+            //     "-i",
+            //     "-",
+            //     ipad_udp_url,
+            // ])
+            // // libx264 encode — fast preset, yuv420p for broad compatibility
+            // .args([
+            //     "-c:v",
+            //     "libx264",
+            //     "-preset",
+            //     "veryfast",
+            //     "-tune",
+            //     "zerolatency",
+            //     "-pix_fmt",
+            //     "yuv420p",
+            //     "-g",
+            //     &format!("{}", fps * 2),
+            //     "-bf",
+            //     "0",
+            //     "-movflags",
+            //     "+faststart",
+            // ])
             .args([
+                // --- INPUT INSTELLINGEN ---
                 "-y",
                 "-f",
                 "rawvideo",
@@ -27,29 +61,31 @@ impl Encoder {
                 "-framerate",
                 &rate,
                 "-i",
-                "-",
-            ])
-            // libx264 encode — fast preset, yuv420p for broad compatibility
-            .args([
+                "-", // Input komt van stdin (Rust)
+                // --- ENCODER INSTELLINGEN ---
                 "-c:v",
                 "libx264",
                 "-preset",
-                "veryfast",
+                "veryfast", // Of "ultrafast" voor nóg minder latency
                 "-tune",
                 "zerolatency",
                 "-pix_fmt",
                 "yuv420p",
                 "-g",
-                &format!("{}", fps * 2),
+                &format!("{}", fps * 2), // Intrate-interval (GOP)
                 "-bf",
-                "0",
-                "-movflags",
-                "+faststart",
+                "0", // Geen B-frames (cruciaal voor zero latency)
+                // --- OUTPUT INSTELLINGEN (Hier zat de fout!) ---
+                "-intra-refresh",
+                "1",
+                "-f",
+                "mpegts",     // Dwing de streaming container af
+                ipad_udp_url, // De URL moet ALTIJD als allerlaatste sluitstuk staan
             ])
             .arg(output_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
+            .stderr(Stdio::inherit())
             .spawn()
             // .expect("start ffmpeg failed");
             .map_err(|e| e.to_string())?;
