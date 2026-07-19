@@ -49,9 +49,10 @@ impl Encoder {
             .arg(output_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
-            .stderr(Stdio::piped())
+            .stderr(Stdio::null())
             .spawn()
-            .map_err(|e| format!("Failed to spawn ffmpeg: {e}"))?;
+            // .expect("start ffmpeg failed");
+            .map_err(|e| e.to_string())?;
 
         // Sanity: ffmpeg may exit instantly if the path is bad. Read stderr
         // lazily; we only inspect it on finalize failure.
@@ -84,28 +85,52 @@ impl Encoder {
 
     /// Close stdin so ffmpeg flushes its encoder and writes the MP4 `moov`
     /// atom (required for a playable file). Blocks until ffmpeg exits.
+    // pub fn finish(&mut self) -> Result<(), String> {
+    //     // Drop stdin by replacing with None → EOF → ffmpeg finalizes.
+    //     self.child.stdin.take();
+
+    //     let output = self
+    //         .child
+    //         .wait()
+    //         .map_err(|e| format!("ffmpeg wait failed: {e}"))?;
+
+    //     if output.success() {
+    //         Ok(())
+    //     } else {
+    //         Err(format!("ffmpeg exited with status {:?}", output.code()))
+    //     }
+    // }
+
     pub fn finish(&mut self) -> Result<(), String> {
-        // Drop stdin by replacing with None → EOF → ffmpeg finalizes.
-        self.child.stdin.take();
+        // 1. Sluit de stdin pipe direct af.
+        // Dit stuurt het EOF (End of File) signaal naar FFmpeg, zodat hij weet dat de opname stopt.
+        if let Some(stdin) = self.child.stdin.take() {
+            std::mem::drop(stdin);
+        }
 
-        let output = self
-            .child
-            .wait()
-            .map_err(|e| format!("ffmpeg wait failed: {e}"))?;
-
-        if output.success() {
-            Ok(())
-        } else {
-            Err(format!("ffmpeg exited with status {:?}", output.code()))
+        // 2. Gebruik .wait() in plaats van .try_wait().
+        // .wait() is blokkerend en wacht tot FFmpeg de MP4-container netjes heeft afgesloten.
+        match self.child.wait() {
+            Ok(status) => {
+                if status.success() {
+                    Ok(())
+                } else {
+                    Err(format!("FFmpeg is gestopt met een foutcode: {}", status))
+                }
+            }
+            Err(e) => Err(format!(
+                "Fout tijdens het wachten op het FFmpeg-proces: {}",
+                e
+            )),
         }
     }
 
-    // pub fn is_alive(&mut self) -> bool {
-    //     match self.child.try_wait() {
-    //         Ok(None) => true,
-    //         _ => false,
-    //     }
-    // }
+    pub fn is_alive(&mut self) -> bool {
+        match self.child.try_wait() {
+            Ok(None) => true,
+            _ => false,
+        }
+    }
 }
 
 impl Drop for Encoder {
