@@ -1,4 +1,5 @@
 // main rust
+#![allow(dead_code)]
 mod capture;
 
 use eframe::egui;
@@ -14,7 +15,7 @@ use std::time::{Duration, SystemTime};
 struct MonitorJson {
     id: u64,
     name: String,
-    // description: String,
+    description: String,
     width: u32,
     height: u32,
     #[serde(rename = "refreshRate")]
@@ -22,8 +23,8 @@ struct MonitorJson {
     x: i32,
     y: i32,
     scale: f32,
-    // #[serde(default)]
-    // vrr: bool,
+    #[serde(default)]
+    vrr: bool,
 }
 
 /// monitor parameters
@@ -424,7 +425,7 @@ impl eframe::App for App {
             // ═══ Configuration ════════════════════════════════════
             ui.group(|ui| {
                 ui.set_width(ui.available_width());
-                ui.strong("⚙️  Monitor Configuration");
+                ui.strong("Monitor Configuration");
                 ui.add_space(6.0);
 
                 egui::Grid::new("cfg_grid")
@@ -510,7 +511,7 @@ impl eframe::App for App {
 
                 ui.add_space(6.0);
                 ui.horizontal(|ui| {
-                    ui.label(egui::RichText::new("→").color(egui::Color32::from_gray(140)));
+                    ui.label(egui::RichText::new(" ").color(egui::Color32::from_gray(140)));
                     ui.monospace(
                         egui::RichText::new(format!(
                             "hyprctl keyword monitor {}",
@@ -550,82 +551,11 @@ impl eframe::App for App {
 
             ui.add_space(8.0);
 
-            // ═══ Status & Monitor Table ══════════════════════════
-            ui.group(|ui| {
-                ui.set_width(ui.available_width());
-                ui.strong("📊  Status");
-                ui.add_space(4.0);
-
-                ui.horizontal(|ui| {
-                    ui.label("Virtual Monitor:");
-                    if self.monitor_exists {
-                        ui.colored_label(egui::Color32::from_rgb(80, 220, 100), "● Active");
-                        if let Some(m) = self.monitors.iter().find(|m| m.name == self.config.name) {
-                            ui.label(
-                                egui::RichText::new(format!(
-                                    "— {}×{} @ {:.0}Hz  (id {}, pos {},{})",
-                                    m.width, m.height, m.fps, m.id, m.x, m.y
-                                ))
-                                .color(egui::Color32::from_gray(160)),
-                            );
-                        }
-                    } else {
-                        ui.colored_label(egui::Color32::from_gray(120), "○ Inactive");
-                    }
-                });
-
-                if !self.monitors.is_empty() {
-                    ui.add_space(6.0);
-                    egui::Grid::new("mon_table")
-                        .num_columns(6)
-                        .spacing([16.0, 4.0])
-                        .striped(true)
-                        .min_col_width(40.0)
-                        .show(ui, |ui| {
-                            ui.strong("ID");
-                            ui.strong("Name");
-                            ui.strong("Resolution");
-                            ui.strong("Refresh");
-                            ui.strong("Position");
-                            ui.strong("Scale");
-                            ui.end_row();
-
-                            for m in &self.monitors {
-                                ui.label(format!("{}", m.id));
-
-                                if m.name == self.config.name {
-                                    ui.colored_label(
-                                        egui::Color32::from_rgb(100, 200, 255),
-                                        &m.name,
-                                    );
-                                } else {
-                                    ui.label(&m.name);
-                                }
-
-                                ui.label(format!("{}×{}", m.width, m.height));
-                                ui.label(format!("{:.0} Hz", m.fps));
-                                ui.label(format!("{}, {}", m.x, m.y));
-                                ui.label(format!("{:.1}", m.scale));
-                                ui.end_row();
-                            }
-                        });
-                }
-            });
-
-            ui.add_space(8.0);
-
             // ═══ Capture ════════════════════════════════════════
             ui.group(|ui| {
                 ui.set_width(ui.available_width());
                 ui.strong("🎥  Capture");
                 ui.add_space(4.0);
-
-                ui.horizontal(|ui| {
-                    ui.label("Output:");
-                    ui.add_enabled_ui(self.capture.is_none(), |ui| {
-                        ui.text_edit_singleline(&mut self.capture_output_path);
-                    });
-                });
 
                 let status = self
                     .capture
@@ -697,43 +627,6 @@ impl eframe::App for App {
             });
 
             ui.add_space(8.0);
-
-            // ═══ Log ═════════════════════════════════════════════
-            ui.group(|ui| {
-                ui.set_width(ui.available_width());
-                ui.horizontal(|ui| {
-                    ui.strong("📝  Log");
-                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                        if ui.button("Clear").clicked() {
-                            self.log_entries.clear();
-                        }
-                    });
-                });
-                ui.add_space(4.0);
-
-                egui::ScrollArea::vertical()
-                    .max_height(180.0)
-                    .stick_to_bottom(true)
-                    .show(ui, |ui| {
-                        for entry in &self.log_entries {
-                            ui.horizontal(|ui| {
-                                ui.label(
-                                    egui::RichText::new(&entry.time)
-                                        .color(egui::Color32::from_gray(100))
-                                        .monospace()
-                                        .small(),
-                                );
-                                let color = match entry.level {
-                                    LogLevel::Info => egui::Color32::from_rgb(150, 200, 255),
-                                    LogLevel::Success => egui::Color32::from_rgb(100, 220, 100),
-                                    LogLevel::Warning => egui::Color32::from_rgb(255, 200, 80),
-                                    LogLevel::Error => egui::Color32::from_rgb(255, 120, 120),
-                                };
-                                ui.colored_label(color, &entry.message);
-                            });
-                        }
-                    });
-            });
         });
     }
 
