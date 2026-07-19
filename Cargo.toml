@@ -1,0 +1,22 @@
+[package]
+name = "ipad-display"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.29"
+egui = "0.29"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = "0.4"
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+# capture
+ashpd = { version = "0.13", default-features = false, features = ["tokio", "screencast"] }
+pipewire = "0.10"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "sync", "macros", "time", "fs"] }
+log = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = true
