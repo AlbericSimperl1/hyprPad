@@ -151,6 +151,8 @@ struct App {
     capture_output_path: String,
     /// Receiver for the final status after a background stop completes.
     stop_result_rx: Option<mpsc::Receiver<capture::CaptureStatus>>,
+    /// Toont het bevestigingsvenster voordat het scherm + capture starten.
+    show_create_confirm: bool,
 }
 
 impl App {
@@ -165,11 +167,9 @@ impl App {
             capture: None,
             capture_output_path: default_capture_path(),
             stop_result_rx: None,
+            show_create_confirm: false,
         };
-        app.log(
-            "Hyprland Virtual Display controller started.",
-            LogLevel::Info,
-        );
+        app.log("Hyprland Virtual Display controller started.", LogLevel::Info);
         app.refresh();
         app
     }
@@ -189,18 +189,26 @@ impl App {
         }
     }
 
-    /// Refresh monitor list from Hyprland
+    /// Refresh monitor list from Hyprland. Logt enkel of er al een tweede
+    /// (virtueel) scherm is — geen ruis bij elke refresh.
     fn refresh(&mut self) {
         match hyprland::get_monitors() {
             Ok(monitors) => {
-                let count = monitors.len();
                 self.monitor_exists = monitors.iter().any(|m| m.name == self.config.name);
                 self.monitors = monitors;
                 self.last_refresh = Some(SystemTime::now());
-                self.log(
-                    format!("Refreshed — {count} monitor(s) active."),
-                    LogLevel::Info,
-                );
+
+                if self.monitor_exists {
+                    self.log(
+                        format!("Virtual monitor '{}' is active.", self.config.name),
+                        LogLevel::Success,
+                    );
+                } else {
+                    self.log(
+                        "No virtual monitor detected — second screen is not active.",
+                        LogLevel::Info,
+                    );
+                }
             }
             Err(e) => {
                 self.log(format!("Failed to get monitors: {e}"), LogLevel::Error);
@@ -208,17 +216,18 @@ impl App {
         }
     }
 
+    /// "Create" knop → opent het bevestigingsvenster (geen actie nog).
     fn do_create(&mut self) {
+        self.show_create_confirm = true;
+    }
+
+    /// Wordt pas aangeroepen nadat de gebruiker in het bevestigingsvenster op
+    /// OK heeft geklikt. Maakt het scherm aan én start direct de capture.
+    fn confirm_create(&mut self) {
         let name = self.config.name.clone();
         let kw = self.config.to_keyword();
-
         self.log(
-            format!("▶ Creating virtual monitor '{name}'..."),
-            LogLevel::Info,
-        );
-        self.log(format!("  $ hyprctl keyword monitor {kw}"), LogLevel::Info);
-        self.log(
-            format!("  $ hyprctl output create headless {name}"),
+            format!("▶ Creating virtual monitor '{name}'  [{kw}]"),
             LogLevel::Info,
         );
 
@@ -229,6 +238,8 @@ impl App {
                     LogLevel::Success,
                 );
                 self.refresh();
+                // Geen reden om een monitor te maken zonder capture — dus meteen starten.
+                self.do_start_capture();
             }
             Err(e) => {
                 self.log(format!("⚠ {e}"), LogLevel::Warning);
@@ -238,13 +249,15 @@ impl App {
     }
 
     fn do_remove(&mut self) {
-        let name = self.config.name.clone();
+        // Capture eerst netjes afsluiten (het virtuele scherm verdwijnt toch).
+        if self.capture.as_ref().map_or(false, |c| c.is_running())
+            || self.stop_result_rx.is_some()
+        {
+            self.do_stop_capture();
+        }
 
-        self.log(
-            format!("▶ Removing virtual monitor '{name}'..."),
-            LogLevel::Info,
-        );
-        self.log(format!("  $ hyprctl output remove {name}"), LogLevel::Info);
+        let name = self.config.name.clone();
+        self.log(format!("▶ Removing virtual monitor '{name}'..."), LogLevel::Info);
 
         match hyprland::remove_monitor(&name) {
             Ok(out) => {
@@ -262,7 +275,6 @@ impl App {
 
     fn do_start_capture(&mut self) {
         if self.capture.as_ref().map_or(false, |c| c.is_running()) {
-            self.log("Capture already running.", LogLevel::Warning);
             return;
         }
         if !self.monitor_exists {
@@ -274,19 +286,10 @@ impl App {
         }
 
         let path = self.capture_output_path.clone();
-        self.log(format!("▶ Starting capture → {path}"), LogLevel::Info);
-        self.log(
-            "  A portal popup will appear — pick the virtual monitor.",
-            LogLevel::Info,
-        );
-
         match capture::CaptureSession::start(path.clone()) {
             Ok(session) => {
                 self.capture = Some(session);
-                self.log(
-                    "✓ Capture session started. Select the monitor in the popup.",
-                    LogLevel::Success,
-                );
+                self.log(format!("✓ Capture started → {path}"), LogLevel::Success);
             }
             Err(e) => {
                 self.log(format!("✗ Failed to start capture: {e}"), LogLevel::Error);
@@ -296,11 +299,6 @@ impl App {
 
     fn do_stop_capture(&mut self) {
         if let Some(mut session) = self.capture.take() {
-            self.log(
-                "▶ Stopping capture (finalizing MP4 in background)...",
-                LogLevel::Info,
-            );
-
             let (tx, rx) = mpsc::channel();
             self.stop_result_rx = Some(rx);
 
@@ -614,18 +612,13 @@ impl eframe::App for App {
 
             ui.add_space(8.0);
 
-            // ═══ Capture ════════════════════════════════════════
+            // ═══ Capture status (compact) ═══════════════════════
+            // Geen aparte start/stop-knoppen meer: capture start automatisch
+            // na het aanmaken van het scherm, en stopt als het scherm weggaat.
             ui.group(|ui| {
                 ui.set_width(ui.available_width());
                 ui.strong("🎥  Capture");
                 ui.add_space(4.0);
-
-                ui.horizontal(|ui| {
-                    ui.label("Output:");
-                    ui.add_enabled_ui(self.capture.is_none(), |ui| {
-                        ui.text_edit_singleline(&mut self.capture_output_path);
-                    });
-                });
 
                 let status = self
                     .capture
@@ -633,42 +626,6 @@ impl eframe::App for App {
                     .map(|c| c.status())
                     .unwrap_or(capture::CaptureStatus::Idle);
 
-                let running = matches!(status, capture::CaptureStatus::Capturing { .. })
-                    || matches!(status, capture::CaptureStatus::Starting(_));
-
-                // Also consider "stopping" as busy — prevents double-clicks.
-                let busy = running || stopping;
-
-                ui.horizontal(|ui| {
-                    ui.add_enabled_ui(
-                        !busy && self.monitor_exists && !self.capture_output_path.is_empty(),
-                        |ui| {
-                            if ui
-                                .button(egui::RichText::new("▶  Start Capture").strong())
-                                .clicked()
-                            {
-                                self.do_start_capture();
-                            }
-                        },
-                    );
-                    ui.add_enabled_ui(running, |ui| {
-                        if ui
-                            .button(egui::RichText::new("⏹  Stop Capture").strong())
-                            .clicked()
-                        {
-                            self.do_stop_capture();
-                        }
-                    });
-                    if stopping {
-                        ui.label(
-                            egui::RichText::new("⏳ Finalizing...")
-                                .small()
-                                .color(egui::Color32::from_rgb(255, 200, 80)),
-                        );
-                    }
-                });
-
-                ui.add_space(4.0);
                 let (status_text, color) = match &status {
                     capture::CaptureStatus::Idle => {
                         ("○ Idle".to_string(), egui::Color32::from_gray(140))
@@ -735,6 +692,88 @@ impl eframe::App for App {
                     });
             });
         });
+
+        // ═══ Bevestigingsvenster: Create Virtual Monitor ════════
+        if self.show_create_confirm {
+            // Houd de naam lokaal bij zodat we de confirm na OK kunnen afhandelen
+            // zonder door self-callbacks te vechten.
+            let mut clicked_ok = false;
+            let mut clicked_cancel = false;
+
+            egui::Window::new("Create Virtual Monitor")
+                .collapsible(false)
+                .resizable(false)
+                .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+                .show(ctx, |ui| {
+                    ui.set_min_width(360.0);
+                    ui.add_space(4.0);
+                    ui.label("Review the monitor configuration:");
+                    ui.add_space(8.0);
+
+                    egui::Grid::new("confirm_grid")
+                        .num_columns(2)
+                        .spacing([10.0, 6.0])
+                        .show(ui, |ui| {
+                            ui.strong("Name");
+                            ui.monospace(&self.config.name);
+                            ui.end_row();
+
+                            ui.strong("Resolution");
+                            ui.monospace(format!(
+                                "{} × {} px",
+                                self.config.width, self.config.height
+                            ));
+                            ui.end_row();
+
+                            ui.strong("Refresh rate");
+                            ui.monospace(format!("{} Hz", self.config.fps));
+                            ui.end_row();
+
+                            ui.strong("Position");
+                            ui.monospace(format!("{} × {}", self.config.x, self.config.y));
+                            ui.end_row();
+
+                            ui.strong("Scale");
+                            ui.monospace(format!("{:.2}", self.config.scale));
+                            ui.end_row();
+
+                            ui.strong("Output");
+                            ui.monospace(&self.capture_output_path);
+                            ui.end_row();
+                        });
+
+                    ui.add_space(4.0);
+                    ui.label(
+                        egui::RichText::new(
+                            "OK creates the monitor and immediately starts capture + streaming.",
+                        )
+                        .small()
+                        .color(egui::Color32::from_gray(150)),
+                    );
+                    ui.add_space(10.0);
+
+                    ui.horizontal(|ui| {
+                        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            if ui
+                                .button(egui::RichText::new("✅  OK").strong())
+                                .clicked()
+                            {
+                                clicked_ok = true;
+                            }
+                            if ui.button("Cancel").clicked() {
+                                clicked_cancel = true;
+                            }
+                        });
+                    });
+                });
+
+            if clicked_ok {
+                self.show_create_confirm = false;
+                self.confirm_create();
+            } else if clicked_cancel {
+                self.show_create_confirm = false;
+            }
+        }
     }
 
     // close vm on exit
