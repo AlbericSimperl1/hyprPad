@@ -518,7 +518,7 @@ fn run_encoder(
     let height = first.height;
     let fps = 30;
 
-    let mut enc = match encoder::Encoder::start(width, height, fps, &output_path) {
+    let mut enc = match encoder::Encoder::start(width, height, fps) {
         Ok(e) => e,
         Err(e) => {
             set_status(

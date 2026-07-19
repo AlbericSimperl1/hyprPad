@@ -10,7 +10,12 @@ pub struct Encoder {
 
 impl Encoder {
     /// Spawn ffmpeg reading raw BGR0 frames from stdin and writing H.264 MP4.
-    pub fn start(width: u32, height: u32, fps: u32, output_path: &str) -> Result<Self, String> {
+    pub fn start(
+        width: u32,
+        height: u32,
+        fps: u32,
+        // output_path: &str
+    ) -> Result<Self, String> {
         let size = format!("{width}x{height}");
         let rate = format!("{fps}");
         // let ipad_udp_url = "udp://172.20.10.1:1234?pkt_size=1316";
@@ -82,7 +87,7 @@ impl Encoder {
                 "mpegts",     // Dwing de streaming container af
                 ipad_udp_url, // De URL moet ALTIJD als allerlaatste sluitstuk staan
             ])
-            .arg(output_path)
+            // .arg(output_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
             .stderr(Stdio::inherit())
