@@ -1,7 +1,7 @@
 use std::io::Write;
 use std::process::{Child, Command, Stdio};
 
-/// Owns a running `ffmpeg -i - … out.mp4` process.
+/// Owns a running `ffmpeg -i - … out.mp4` process
 pub struct Encoder {
     child: Child,
     width: u32,

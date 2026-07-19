@@ -17,6 +17,7 @@ pipewire = "0.10"
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "sync", "macros", "time", "fs"] }
 log = "0.4"
 
+# releases
 [profile.release]
 opt-level = 3
 lto = true

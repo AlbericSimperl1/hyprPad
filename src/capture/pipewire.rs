@@ -8,7 +8,7 @@ use pw::{properties::properties, spa};
 
 use super::Frame;
 
-/// Shared state inside the stream listener.
+/// Shared state inside the stream listener
 struct UserData {
     tx: Sender<Frame>,
     format: spa::param::video::VideoInfoRaw,

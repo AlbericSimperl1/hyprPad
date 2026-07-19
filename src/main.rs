@@ -1,3 +1,4 @@
+// main rust
 mod capture;
 
 use eframe::egui;

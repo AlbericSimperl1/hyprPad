@@ -6,7 +6,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::JoinHandle;
 
-/// Live state of a capture session, readable from the GUI thread.
+/// Live state of a capture session, readable from the GUI thread
 #[derive(Clone, Debug)]
 pub enum CaptureStatus {
     /// No session created yet.
