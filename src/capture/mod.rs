@@ -320,7 +320,7 @@ pub mod pipewire;
 pub mod portal;
 
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
 
 /// Live state of a capture session, readable from the GUI thread
@@ -361,6 +361,44 @@ impl Frame {
         self.width as usize * 4
     }
 }
+
+/// State shared between the PipeWire capture callback and the encoder feeder.
+///
+/// Only the most recently produced frame is kept; if the encoder is busy when
+/// a new frame arrives, the older pending frame is discarded. That guarantees
+/// the encoder never lags more than one frame behind the source, which is what
+/// keeps end-to-end latency bounded.
+#[derive(Default)]
+struct MailboxState {
+    /// `Some(frame)` when a frame is waiting to be consumed; `None` right
+    /// after the encoder has drained it.
+    pending: Option<Frame>,
+    /// Set when PipeWire has shut down and no further frames will arrive.
+    closed: bool,
+}
+
+/// Sender side handed to PipeWire. Cheap to clone (just an `Arc`).
+pub(super) struct FrameSink {
+    mailbox: Arc<(Mutex<MailboxState>, Condvar)>,
+}
+
+impl FrameSink {
+    fn send(&self, frame: Frame) -> bool {
+        let (m, cv) = &*self.mailbox;
+        let mut g = m.lock().unwrap();
+        if g.closed {
+            return false;
+        }
+        // Overwrite any older pending frame — latest wins.
+        g.pending = Some(frame);
+        cv.notify_one();
+        true
+    }
+}
+
+/// Type alias for the shared mailbox, used by both `FrameSink` and
+/// `run_encoder`.
+type Mailbox = Arc<(Mutex<MailboxState>, Condvar)>;
 
 /// Owns a running capture. Drop or [`CaptureSession::stop`] tears it down.
 pub struct CaptureSession {
@@ -478,39 +516,68 @@ fn run_capture_loop(
         CaptureStatus::Starting("Connecting PipeWire stream…".into()),
     );
 
-    // 2. PipeWire → frame channel → FFmpeg.
-    let (tx, rx) = std::sync::mpsc::channel::<Frame>();
+    // 2. PipeWire → latest-frame mailbox → FFmpeg.
+    // We use a "latest frame wins" mailbox instead of an unbounded channel:
+    // if the encoder falls behind, we drop intermediate frames rather than
+    // queuing them. That keeps end-to-end latency bounded regardless of any
+    // encoder hiccups.
+    let mailbox = Arc::new((Mutex::new(MailboxState::default()), Condvar::new()));
 
     let status_for_feeder = Arc::clone(&status);
     let stop_for_feeder = Arc::clone(&stop_flag);
     let path_for_feeder = output_path.clone();
+    let mailbox_for_feeder = Arc::clone(&mailbox);
     let feeder = std::thread::Builder::new()
         .name("hyprpad-encoder".into())
-        .spawn(move || run_encoder(rx, stop_for_feeder, status_for_feeder, path_for_feeder))
+        .spawn(move || {
+            run_encoder(mailbox_for_feeder, stop_for_feeder, status_for_feeder, path_for_feeder)
+        })
         .expect("spawn encoder feeder");
+
+    let tx = FrameSink { mailbox: Arc::clone(&mailbox) };
 
     // Blocks until stop_flag is set or PipeWire dies.
     if let Err(e) = pipewire::run_capture(pw_fd, node_id, tx, Arc::clone(&stop_flag)) {
         set_status(&status, CaptureStatus::Error(format!("PipeWire: {e}")));
     }
 
-    // Dropping rx naturally ends the feeder when the last queued frame is read.
+    // Signal the feeder that no more frames will arrive, then join.
+    {
+        let (m, cv) = &*mailbox;
+        let mut g = m.lock().unwrap();
+        g.closed = true;
+        cv.notify_one();
+    }
     let _ = feeder.join();
 }
 
-/// Runs on the `hyprpad-encoder` thread. Receives frames and pumps them into
-/// FFmpeg.
+/// Runs on the `hyprpad-encoder" thread. Pops the most recent frame from the
+/// mailbox (blocking until one arrives or the mailbox is closed) and pumps it
+/// into FFmpeg. Older frames are dropped by the producer, so this thread always
+/// encodes the freshest available data — keeping latency bounded.
 fn run_encoder(
-    rx: std::sync::mpsc::Receiver<Frame>,
+    mailbox: Mailbox,
     stop_flag: Arc<AtomicBool>,
     status: Arc<Mutex<CaptureStatus>>,
     output_path: String,
 ) {
-    let first = match rx.recv() {
-        Ok(f) => f,
-        Err(_) => {
-            set_status(&status, CaptureStatus::Error("No frames received".into()));
-            return;
+    let (m, cv) = &*mailbox;
+
+    // Block until the first frame arrives (or the mailbox closes).
+    let first = {
+        let mut g = m.lock().unwrap();
+        loop {
+            if let Some(f) = g.pending.take() {
+                break f;
+            }
+            if g.closed {
+                set_status(&status, CaptureStatus::Error("No frames received".into()));
+                return;
+            }
+            if stop_flag.load(Ordering::SeqCst) {
+                return;
+            }
+            g = cv.wait(g).unwrap();
         }
     };
 
@@ -547,14 +614,36 @@ fn run_encoder(
     frames += 1;
     update_frame_count(&status, &output_path, frames);
 
-    // OPGESCHOOND: Maak gebruik van een zuivere, blokkerende recv().
-    // Als de opname stopt, sluit PipeWire af en dropt tx, wat de loop gracieus breekt.
+    // Main loop: wait for a fresh frame, encode it, repeat.
     while !stop_flag.load(Ordering::SeqCst) {
-        let frame = match rx.recv() {
-            Ok(f) => f,
-            Err(_) => break, // Channel gedisconnect (PipeWire loop is gestopt)
+        // Take whatever is the latest pending frame; if none, block.
+        let frame = {
+            let mut g = m.lock().unwrap();
+            loop {
+                if let Some(f) = g.pending.take() {
+                    break f;
+                }
+                if g.closed {
+                    // No more frames and source is gone — finish up.
+                    update_frame_count(&status, &output_path, frames);
+                    finalize(&mut enc, &status, &output_path, frames, false);
+                    return;
+                }
+                if stop_flag.load(Ordering::SeqCst) {
+                    break Frame {
+                        width: 0,
+                        height: 0,
+                        stride: 0,
+                        data: Vec::new(),
+                    };
+                }
+                g = cv.wait(g).unwrap();
+            }
         };
 
+        if stop_flag.load(Ordering::SeqCst) {
+            break;
+        }
         if frame.width != width || frame.height != height {
             // Resolutie gewijzigd mid-stream — stop gracieus.
             break;
