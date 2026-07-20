@@ -9,49 +9,28 @@ pub struct Encoder {
 }
 
 impl Encoder {
-    /// Spawn ffmpeg reading raw BGR0 frames from stdin and writing H.264 MP4.
-    pub fn start(width: u32, height: u32, fps: u32, output_path: &str) -> Result<Self, String> {
+    /// Spawn ffmpeg reading raw BGR0 frames from stdin and streaming them as
+    /// H.264 / MPEG-TS over UDP — mirrors the standalone command:
+    ///
+    /// ```text
+    /// ffmpeg -re -f lavfi -i testsrc=size=1920x1080:rate=60 \
+    ///   -c:v libx264 -preset ultrafast -tune zerolatency \
+    ///   -g 30 -keyint_min 30 \
+    ///   -f mpegts udp://192.168.0.119:5000?pkt_size=1316
+    /// ```
+    ///
+    /// `output_path` is only kept for API compatibility with the caller; the
+    /// stream is the single UDP output (writing an extra `.mp4` alongside the
+    /// UDP url breaks the keyframe structure VLC needs to actually decode).
+    pub fn start(width: u32, height: u32, fps: u32, _output_path: &str) -> Result<Self, String> {
         let size = format!("{width}x{height}");
         let rate = format!("{fps}");
-        // let ipad_udp_url = "udp://172.20.10.1:1234?pkt_size=1316";
-        // let ipad_udp_url = "udp://127.0.0.1:1234?pkt_size=1316"; // local for rust debugging
+        let gop = format!("{fps}");
         let ipad_udp_url = "udp://192.168.0.119:5000?pkt_size=1316";
 
         let mut child = Command::new("ffmpeg")
-            // raw video input
-            // .args([
-            //     "-y",
-            //     "-f",
-            //     "rawvideo",
-            //     "-pixel_format",
-            //     "bgr0",
-            //     "-video_size",
-            //     &size,
-            //     "-framerate",
-            //     &rate,
-            //     "-i",
-            //     "-",
-            //     ipad_udp_url,
-            // ])
-            // // libx264 encode — fast preset, yuv420p for broad compatibility
-            // .args([
-            //     "-c:v",
-            //     "libx264",
-            //     "-preset",
-            //     "veryfast",
-            //     "-tune",
-            //     "zerolatency",
-            //     "-pix_fmt",
-            //     "yuv420p",
-            //     "-g",
-            //     &format!("{}", fps * 2),
-            //     "-bf",
-            //     "0",
-            //     "-movflags",
-            //     "+faststart",
-            // ])
             .args([
-                // --- INPUT INSTELLINGEN ---
+                // --- INPUT: raw BGR0 frames from stdin (Rust) ---
                 "-y",
                 "-f",
                 "rawvideo",
@@ -62,33 +41,32 @@ impl Encoder {
                 "-framerate",
                 &rate,
                 "-i",
-                "-", // Input komt van stdin (Rust)
-                // --- ENCODER INSTELLINGEN ---
+                "-",
+                // --- ENCODER: match the working standalone command ---
                 "-c:v",
                 "libx264",
                 "-preset",
-                "veryfast", // Of "ultrafast" voor nóg minder latency
+                "ultrafast",
                 "-tune",
                 "zerolatency",
+                // bgr0 must be converted to yuv420p for H.264 compatibility.
+                // (testsrc in the standalone command already outputs yuv420p,
+                //  so it doesn't need this flag — we do.)
                 "-pix_fmt",
                 "yuv420p",
                 "-g",
-                &format!("{}", fps * 2), // Intrate-interval (GOP)
-                "-bf",
-                "0", // Geen B-frames (cruciaal voor zero latency)
-                // --- OUTPUT INSTELLINGEN (Hier zat de fout!) ---
-                "-intra-refresh",
-                "1",
+                &gop,
+                "-keyint_min",
+                &gop,
+                // --- OUTPUT: single MPEG-TS over UDP, must be last arg ---
                 "-f",
-                "mpegts",     // Dwing de streaming container af
-                ipad_udp_url, // De URL moet ALTIJD als allerlaatste sluitstuk staan
+                "mpegts",
+                ipad_udp_url,
             ])
-            .arg(output_path)
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
             .stderr(Stdio::inherit())
             .spawn()
-            // .expect("start ffmpeg failed");
             .map_err(|e| e.to_string())?;
 
         // Sanity: ffmpeg may exit instantly if the path is bad. Read stderr
