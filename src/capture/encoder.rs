@@ -14,7 +14,8 @@ impl Encoder {
         let size = format!("{width}x{height}");
         let rate = format!("{fps}");
         // let ipad_udp_url = "udp://172.20.10.1:1234?pkt_size=1316";
-        let ipad_udp_url = "udp://127.0.0.1:1234?pkt_size=1316"; // local for rust debugging
+        // let ipad_udp_url = "udp://127.0.0.1:1234?pkt_size=1316"; // local for rust debugging
+        let ipad_udp_url = "udp://192.168.0.119:5000?pkt_size=1316";
 
         let mut child = Command::new("ffmpeg")
             // raw video input
