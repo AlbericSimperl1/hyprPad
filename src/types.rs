@@ -33,8 +33,8 @@ impl Default for MonitorConfig {
     fn default() -> Self {
         Self {
             name: "VIRTUAL1".into(),
-            width: 1600, // ipad 4/3
-            height: 1200,
+            width: 1200, // ipad 4/3
+            height: 900,
             fps: 60,
             x: 0,
             y: 0,
