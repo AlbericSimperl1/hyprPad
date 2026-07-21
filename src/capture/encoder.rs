@@ -10,27 +10,35 @@ pub struct Encoder {
 
 impl Encoder {
     /// Spawn ffmpeg reading raw BGR0 frames from stdin and streaming them as
-    /// H.264 / MPEG-TS over UDP — mirrors the standalone command:
+    /// **raw H.264 Annex-B over UDP** — de iPad-client (hyprPadClient) zoekt
+    /// Annex-B startcodes (`00 00 00 01`), dus we mogen géén MPEG-TS muxen.
+    ///
+    /// VLC accepteerde MPEG-TS maar buffert sterk; de hyprPadClient heeft
+    /// geen TS-demuxer. Door raw Annex-B te sturen krijgt de Rust NALU-parser
+    /// werk direct (en is `<100ms` latency haalbaar).
+    ///
+    /// Equivalent ffmpeg command-line:
     ///
     /// ```text
-    /// ffmpeg -re -f lavfi -i testsrc=size=1920x1080:rate=60 \
-    ///   -c:v libx264 -preset ultrafast -tune zerolatency \
-    ///   -g 30 -keyint_min 30 \
-    ///   -f mpegts udp://192.168.0.119:5000?pkt_size=1316
+    /// ffmpeg -f rawvideo -pixel_format bgr0 -video_size 1920x1080 -framerate 60 \
+    ///   -i - -c:v libx264 -preset ultrafast -tune zerolatency \
+    ///   -profile:v baseline -level 4.0 -bf 0 \
+    ///   -g 60 -keyint_min 60 -sc_threshold 0 \
+    ///   -pix_fmt yuv420p -f h264 udp://192.168.0.119:5000?pkt_size=1316
     /// ```
     ///
-    /// `output_path` is only kept for API compatibility with the caller; the
-    /// stream is the single UDP output (writing an extra `.mp4` alongside the
-    /// UDP url breaks the keyframe structure VLC needs to actually decode).
+    /// output_path is louter voor API-compatibiliteit met de oude MP4-pipeline.
     pub fn start(width: u32, height: u32, fps: u32, _output_path: &str) -> Result<Self, String> {
         let size = format!("{width}x{height}");
         let rate = format!("{fps}");
-        let gop = format!("{fps}");
+        // Korte GOP (1 s) → snelle recovery bij packetverlies én stijger I-frame cadans
+        // voor onder 100 ms end-to-end latency.
+        let gop = format!("{}", fps.max(1));
         let ipad_udp_url = "udp://192.168.0.119:5000?pkt_size=1316";
 
         let mut child = Command::new("ffmpeg")
             .args([
-                // --- INPUT: raw BGR0 frames from stdin (Rust) ---
+                // --- INPUT: raw BGR0 frames van stdin (PipeWire) ---
                 "-y",
                 "-f",
                 "rawvideo",
@@ -42,24 +50,37 @@ impl Encoder {
                 &rate,
                 "-i",
                 "-",
-                // --- ENCODER: match the working standalone command ---
+                // --- ENCODER: x264, ultra-low latency ---
                 "-c:v",
                 "libx264",
                 "-preset",
                 "ultrafast",
                 "-tune",
                 "zerolatency",
-                // bgr0 must be converted to yuv420p for H.264 compatibility.
-                // (testsrc in the standalone command already outputs yuv420p,
-                //  so it doesn't need this flag — we do.)
+                // VideoToolbox op iOS verdraagt slecht B-frames; met -bf 0 zijn
+                // alleen I / P actief → decoder loopt realtime zonder reorder queue.
+                "-bf",
+                "0",
+                // Baseline / 4.0 past bij iPad hardware decoder + geen B-frames.
+                "-profile:v",
+                "baseline",
+                "-level",
+                "4.0",
+                // bgr0 → yuv420p (x264 vereist yuv420p voor H.264 baseline).
                 "-pix_fmt",
                 "yuv420p",
+                // Voorspelbare keyframes: 1x per seconde, geen scenecut-triggers.
                 "-g",
                 &gop,
                 "-keyint_min",
                 &gop,
-                // --- LOW-LATENCY MUXER FLAGS ---
-                // Prevent ffmpeg from buffering TS packets before flushing.
+                "-sc_threshold",
+                "0",
+                // Herhaal SPS/PPS voor elke keyframe → client kan op elk moment
+                // aansluiten en heeft meteen de format-description nodig.
+                "-x264-params",
+                "repeat-headers=1:annexb=1",
+                // --- LOW-LATENCY MUXER FLAGS (van toepassing op h264 raw) ---
                 "-fflags",
                 "nobuffer",
                 "-flags",
@@ -72,9 +93,9 @@ impl Encoder {
                 "0",
                 "-muxpreload",
                 "0",
-                // --- OUTPUT: single MPEG-TS over UDP, must be last arg ---
+                // --- OUTPUT: raw H.264 Annex-B over UDP, laatste arg ---
                 "-f",
-                "mpegts",
+                "h264",
                 ipad_udp_url,
             ])
             .stdin(Stdio::piped())
