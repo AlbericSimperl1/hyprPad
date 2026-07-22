@@ -1,0 +1,273 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.hyprPadClient-x86_64-unknown-linux-gnu-debug.module" : {
+      "executable" : "/usr/lib/swift/bin/swiftc",
+      "fileList" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources",
+      "importPath" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/CRustCore/include/rust_core.h"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "hyprPadClient",
+      "moduleOutputPath" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules/hyprPadClient.swiftmodule",
+      "objects" : [
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/AppState.swift.o",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/ContentView.swift.o",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/H264Decoder.swift.o",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/StreamEngine.swift.o",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/VideoView.swift.o",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/hyprPadClientApp.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-Onone",
+        "-enable-testing",
+        "-j16",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap",
+        "-Xcc",
+        "-I",
+        "-Xcc",
+        "/home/alberic/hyprPad/swift/Sources/CRustCore/include",
+        "-module-cache-path",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/include/hyprPadClient-Swift.h",
+        "-swift-version",
+        "6",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "swift",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "outputFileMapPath" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules/hyprPadClient.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"
+      ],
+      "tempsPath" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "hyprPadClient" : [
+      "/usr/lib/swift/bin/swiftc",
+      "-module-name",
+      "hyprPadClient",
+      "-package-name",
+      "swift",
+      "-c",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift",
+      "-I",
+      "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-Onone",
+      "-enable-testing",
+      "-j16",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-Xcc",
+      "-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap",
+      "-Xcc",
+      "-I",
+      "-Xcc",
+      "/home/alberic/hyprPad/swift/Sources/CRustCore/include",
+      "-module-cache-path",
+      "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/include/hyprPadClient-Swift.h",
+      "-swift-version",
+      "6",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-g",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "swift",
+      "-Xcc",
+      "-fno-omit-frame-pointer",
+      "-driver-use-frontend-path",
+      "/usr/lib/swift/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "CRustCore" : [
+
+    ],
+    "hyprPadClient" : [
+      "CRustCore"
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"
+        }
+      ],
+      "outputFilePath" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources"
+    },
+    "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/usr/lib/swift/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt"
+    }
+  }
+}

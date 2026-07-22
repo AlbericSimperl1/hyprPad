@@ -1,0 +1,51 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "CRustCore-x86_64-unknown-linux-gnu-debug.module": ["<CRustCore-x86_64-unknown-linux-gnu-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "hyprPadClient-x86_64-unknown-linux-gnu-debug.module": ["<hyprPadClient-x86_64-unknown-linux-gnu-debug.module>"]
+  "main": ["<hyprPadClient-x86_64-unknown-linux-gnu-debug.module>"]
+  "test": ["<hyprPadClient-x86_64-unknown-linux-gnu-debug.module>"]
+default: "main"
+nodes:
+  "/home/alberic/hyprPad/swift/Sources/CRustCore/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources"]
+    description: "Write auxiliary file /home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources"
+
+  "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/usr/lib/swift/bin/swiftc"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt"
+
+  "<hyprPadClient-x86_64-unknown-linux-gnu-debug.module>":
+    tool: phony
+    inputs: ["/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules/hyprPadClient.swiftmodule"]
+    outputs: ["<hyprPadClient-x86_64-unknown-linux-gnu-debug.module>"]
+
+  "C.hyprPadClient-x86_64-unknown-linux-gnu-debug.module":
+    tool: shell
+    inputs: ["/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/swift-version-5BD8B568FD16BF8B.txt","/home/alberic/hyprPad/swift/Sources/CRustCore/include/rust_core.h","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules/hyprPadClient.swiftmodule"]
+    description: "Compiling Swift Module 'hyprPadClient' (6 sources)"
+    args: ["/usr/lib/swift/bin/swiftc","-module-name","hyprPadClient","-emit-dependencies","-emit-module","-emit-module-path","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules/hyprPadClient.swiftmodule","-output-file-map","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/output-file-map.json","-parse-as-library","-incremental","@/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/sources","-I","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/Modules","-target","x86_64-unknown-linux-gnu","-incremental","-enable-batch-mode","-serialize-diagnostics","-Onone","-enable-testing","-j16","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-Xcc","-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap","-Xcc","-I","-Xcc","/home/alberic/hyprPad/swift/Sources/CRustCore/include","-module-cache-path","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/include/hyprPadClient-Swift.h","-swift-version","6","-Xfrontend","-experimental-lazy-typecheck","-Xfrontend","-experimental-skip-all-function-bodies","-Xfrontend","-experimental-allow-module-with-compiler-errors","-Xfrontend","-empty-abi-descriptor","-g","-Xcc","-fPIC","-Xcc","-g","-package-name","swift","-Xcc","-fno-omit-frame-pointer"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/home/alberic/hyprPad/swift/Sources/CRustCore/","/home/alberic/hyprPad/swift/Sources/hyprPadClient/","/home/alberic/hyprPad/swift/Package.swift","/home/alberic/hyprPad/swift/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

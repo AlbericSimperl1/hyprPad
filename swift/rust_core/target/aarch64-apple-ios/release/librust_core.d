@@ -1,0 +1,1 @@
+/home/alberic/hyprPad/swift/rust_core/target/aarch64-apple-ios/release/librust_core.a: /home/alberic/hyprPad/swift/rust_core/src/lib.rs /home/alberic/hyprPad/swift/rust_core/src/parser.rs /home/alberic/hyprPad/swift/rust_core/src/ring.rs /home/alberic/hyprPad/swift/rust_core/src/stats.rs /home/alberic/hyprPad/swift/rust_core/src/udp.rs

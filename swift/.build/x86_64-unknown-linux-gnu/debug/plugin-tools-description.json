@@ -1,0 +1,361 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.hyprPadClient-arm64-apple-ios-debug.module" : {
+      "executable" : "/usr/lib/swift/bin/swiftc",
+      "fileList" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources",
+      "importPath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "hyprPadClient",
+      "moduleOutputPath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule",
+      "objects" : [
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-ios26.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j16",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap",
+        "-Xcc",
+        "-I",
+        "-Xcc",
+        "/home/alberic/hyprPad/swift/Sources/CRustCore/include",
+        "-module-cache-path",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/ModuleCache",
+        "-resource-dir",
+        "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/include/hyprPadClient-Swift.h",
+        "-color-diagnostics",
+        "-swift-version",
+        "6",
+        "-sdk",
+        "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-use-ld=lld",
+        "-tools-directory",
+        "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin",
+        "-sdk",
+        "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk",
+        "-ld-path=/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin/ld64.lld",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk",
+        "-Xcc",
+        "-g",
+        "-I",
+        "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib",
+        "-package-name",
+        "swift"
+      ],
+      "outputFileMapPath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift",
+        "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"
+      ],
+      "tempsPath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "hyprPadClient" : [
+      "/usr/lib/swift/bin/swiftc",
+      "-module-name",
+      "hyprPadClient",
+      "-package-name",
+      "swift",
+      "-c",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift",
+      "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift",
+      "-I",
+      "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules",
+      "-target",
+      "arm64-apple-ios26.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j16",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-Xcc",
+      "-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap",
+      "-Xcc",
+      "-I",
+      "-Xcc",
+      "/home/alberic/hyprPad/swift/Sources/CRustCore/include",
+      "-module-cache-path",
+      "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/ModuleCache",
+      "-resource-dir",
+      "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/include/hyprPadClient-Swift.h",
+      "-color-diagnostics",
+      "-swift-version",
+      "6",
+      "-sdk",
+      "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-use-ld=lld",
+      "-tools-directory",
+      "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin",
+      "-sdk",
+      "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk",
+      "-ld-path=/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin/ld64.lld",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk",
+      "-Xcc",
+      "-g",
+      "-I",
+      "/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib",
+      "-package-name",
+      "swift",
+      "-driver-use-frontend-path",
+      "/usr/lib/swift/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "CRustCore" : [
+
+    ],
+    "hyprPadClient" : [
+      "CRustCore"
+    ],
+    "hyprPadClient_App" : [
+      "hyprPadClient",
+      "CRustCore"
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o"
+        }
+      ],
+      "outputFilePath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList"
+    },
+    "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"
+        }
+      ],
+      "outputFilePath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources"
+    },
+    "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/usr/lib/swift/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt"
+    }
+  }
+}

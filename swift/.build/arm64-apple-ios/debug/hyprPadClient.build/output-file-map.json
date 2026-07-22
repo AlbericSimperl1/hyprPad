@@ -1,0 +1,47 @@
+{
+  "": {
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/primary.swiftdeps"
+  },
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift": {
+    "dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.d",
+    "object": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o",
+    "swiftmodule": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState~partial.swiftmodule",
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swiftdeps",
+    "diagnostics": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.dia"
+  },
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift": {
+    "dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.d",
+    "object": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o",
+    "swiftmodule": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swiftdeps",
+    "diagnostics": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.dia"
+  },
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift": {
+    "dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.d",
+    "object": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o",
+    "swiftmodule": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder~partial.swiftmodule",
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swiftdeps",
+    "diagnostics": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.dia"
+  },
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift": {
+    "dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.d",
+    "object": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o",
+    "swiftmodule": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine~partial.swiftmodule",
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swiftdeps",
+    "diagnostics": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.dia"
+  },
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift": {
+    "dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.d",
+    "object": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o",
+    "swiftmodule": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView~partial.swiftmodule",
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swiftdeps",
+    "diagnostics": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.dia"
+  },
+  "/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift": {
+    "dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.d",
+    "object": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o",
+    "swiftmodule": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp~partial.swiftmodule",
+    "swift-dependencies": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swiftdeps",
+    "diagnostics": "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.dia"
+  }
+}

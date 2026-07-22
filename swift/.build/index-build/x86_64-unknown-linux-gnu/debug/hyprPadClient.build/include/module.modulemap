@@ -1,0 +1,3 @@
+module hyprPadClient {
+    header "/home/alberic/hyprPad/swift/.build/index-build/x86_64-unknown-linux-gnu/debug/hyprPadClient.build/include/hyprPadClient-Swift.h"
+}

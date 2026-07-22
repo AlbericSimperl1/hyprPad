@@ -1,0 +1,94 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "CRustCore-arm64-apple-ios-debug.module": ["<CRustCore-arm64-apple-ios-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "hyprPadClient-App-arm64-apple-ios-debug.exe": ["<hyprPadClient-App-arm64-apple-ios-debug.exe>"]
+  "hyprPadClient-App-arm64-apple-ios-debug.module": ["<hyprPadClient-App-arm64-apple-ios-debug.module>"]
+  "hyprPadClient-arm64-apple-ios-debug.module": ["<hyprPadClient-arm64-apple-ios-debug.module>"]
+  "main": ["<hyprPadClient-App-arm64-apple-ios-debug.exe>","<hyprPadClient-App-arm64-apple-ios-debug.module>"]
+  "test": ["<hyprPadClient-App-arm64-apple-ios-debug.exe>","<hyprPadClient-App-arm64-apple-ios-debug.module>"]
+default: "main"
+nodes:
+  "/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Sources/hyprPadClient-App/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o":
+    tool: clang
+    inputs: ["/home/alberic/hyprPad/swift/Sources/CRustCore/CRustCore.c"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o"]
+    description: "Compiling CRustCore CRustCore.c"
+    args: ["/usr/lib/swift/bin/clang","-fobjc-arc","-target","arm64-apple-ios26.0","-O0","-DSWIFT_PACKAGE=1","-DDEBUG=1","-fblocks","-index-store-path","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/index/store","-fmodules","-fmodule-name=CRustCore","-fmodules-cache-path=/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/ModuleCache","-I","/home/alberic/hyprPad/swift/Sources/CRustCore/include","-isysroot","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-g","-I","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib","-MD","-MT","dependencies","-MF","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.d","-c","/home/alberic/hyprPad/swift/Sources/CRustCore/CRustCore.c","-o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o"]
+    deps: "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.d"
+
+  "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList"
+
+  "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources"]
+    description: "Write auxiliary file /home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources"
+
+  "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o":
+    tool: clang
+    inputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule","/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Sources/hyprPadClient-App/stub.c"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o"]
+    description: "Compiling hyprPadClient-App stub.c"
+    args: ["/usr/lib/swift/bin/clang","-fobjc-arc","-target","arm64-apple-ios26.0","-O0","-DSWIFT_PACKAGE=1","-DDEBUG=1","-fblocks","-index-store-path","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/index/store","-fmodules","-fmodule-name=hyprPadClient_App","-fmodules-cache-path=/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/ModuleCache","-I","/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Sources/hyprPadClient-App/include","-I","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/include","-I","/home/alberic/hyprPad/swift/Sources/CRustCore/include","-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap","-isysroot","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-g","-I","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib","-MD","-MT","dependencies","-MF","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.d","-c","/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Sources/hyprPadClient-App/stub.c","-o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o"]
+    deps: "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.d"
+
+  "/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/usr/lib/swift/bin/swiftc"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt"
+
+  "<CRustCore-arm64-apple-ios-debug.module>":
+    tool: phony
+    inputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o"]
+    outputs: ["<CRustCore-arm64-apple-ios-debug.module>"]
+
+  "<hyprPadClient-App-arm64-apple-ios-debug.exe>":
+    tool: phony
+    inputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App"]
+    outputs: ["<hyprPadClient-App-arm64-apple-ios-debug.exe>"]
+
+  "<hyprPadClient-App-arm64-apple-ios-debug.module>":
+    tool: phony
+    inputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o"]
+    outputs: ["<hyprPadClient-App-arm64-apple-ios-debug.module>"]
+
+  "<hyprPadClient-arm64-apple-ios-debug.module>":
+    tool: phony
+    inputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule"]
+    outputs: ["<hyprPadClient-arm64-apple-ios-debug.module>"]
+
+  "C.hyprPadClient-App-arm64-apple-ios-debug.exe":
+    tool: shell
+    inputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient_App.build/stub.c.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App"]
+    description: "Linking /home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App"
+    args: ["/usr/lib/swift/bin/swiftc","-L","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug","-o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App","-module-name","hyprPadClient_App","-emit-executable","-resource-dir","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift","-Xclang-linker","-resource-dir","-Xclang-linker","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang","-Xlinker","-rpath","-Xlinker","@loader_path","@/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient-App.product/Objects.LinkFileList","-runtime-compatibility-version","none","-target","arm64-apple-ios26.0","-Xlinker","-rpath","-Xlinker","@executable_path/Frameworks","/home/alberic/hyprPad/swift/Sources/CRustCore/lib/librust_core.a","-Xlinker","-add_ast_path","-Xlinker","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule","-sdk","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-Xfrontend","-enable-cross-import-overlays","-use-ld=lld","-tools-directory","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin","-sdk","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-ld-path=/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin/ld64.lld","-g","-L","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib"]
+
+  "C.hyprPadClient-arm64-apple-ios-debug.module":
+    tool: shell
+    inputs: ["/home/alberic/hyprPad/swift/Sources/hyprPadClient/AppState.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/ContentView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/H264Decoder.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/StreamEngine.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/VideoView.swift","/home/alberic/hyprPad/swift/Sources/hyprPadClient/hyprPadClientApp.swift","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/swift-version-5BD8B568FD16BF8B.txt","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/CRustCore.build/CRustCore.c.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources"]
+    outputs: ["/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/AppState.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/ContentView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/H264Decoder.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/StreamEngine.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/VideoView.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/hyprPadClientApp.swift.o","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule"]
+    description: "Compiling Swift Module 'hyprPadClient' (6 sources)"
+    args: ["/usr/lib/swift/bin/swiftc","-module-name","hyprPadClient","-emit-dependencies","-emit-module","-emit-module-path","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules/hyprPadClient.swiftmodule","-output-file-map","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/output-file-map.json","-parse-as-library","-incremental","-c","@/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/sources","-I","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/Modules","-target","arm64-apple-ios26.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/index/store","-Onone","-enable-testing","-j16","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-Xcc","-fmodule-map-file=/home/alberic/hyprPad/swift/Sources/CRustCore/include/module.modulemap","-Xcc","-I","-Xcc","/home/alberic/hyprPad/swift/Sources/CRustCore/include","-module-cache-path","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/ModuleCache","-resource-dir","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/home/alberic/hyprPad/swift/.build/arm64-apple-ios/debug/hyprPadClient.build/include/hyprPadClient-Swift.h","-color-diagnostics","-swift-version","6","-sdk","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-Xfrontend","-enable-cross-import-overlays","-use-ld=lld","-tools-directory","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin","-sdk","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-ld-path=/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/toolset/bin/ld64.lld","-g","-Xcc","-isysroot","-Xcc","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk","-Xcc","-g","-I","/home/alberic/.config/swiftpm/swift-sdks/darwin.artifactbundle/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib","-package-name","swift"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Sources/hyprPadClient-App/","/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Package.swift","/home/alberic/hyprPad/swift/xtool/.xtool-tmp/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+
