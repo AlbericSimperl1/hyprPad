@@ -1,15 +1,16 @@
 use std::os::fd::OwnedFd;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
 use pipewire as pw;
 use pw::{properties::properties, spa};
 
-use super::{Frame, FrameSink};
+use super::Frame;
 
 /// Shared state inside the stream listener
 struct UserData {
-    tx: FrameSink,
+    tx: Sender<Frame>,
     format: spa::param::video::VideoInfoRaw,
     have_format: bool,
     stop_flag: Arc<AtomicBool>,
@@ -40,7 +41,7 @@ impl UserData {
 pub fn run_capture(
     pw_fd: OwnedFd,
     node_id: u32,
-    tx: FrameSink,
+    tx: Sender<Frame>,
     stop_flag: Arc<AtomicBool>,
 ) -> Result<(), String> {
     pw::init();
@@ -155,7 +156,7 @@ pub fn run_capture(
                             stride: if stride > 0 { stride } else { w * 4 },
                             data: slice.to_vec(),
                         };
-                        if !user_data.tx.send(frame) {
+                        if user_data.tx.send(frame).is_err() {
                             // Encoder gone — quit the main loop.
                             user_data.request_quit();
                         }

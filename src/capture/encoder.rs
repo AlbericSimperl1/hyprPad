@@ -58,20 +58,6 @@ impl Encoder {
                 &gop,
                 "-keyint_min",
                 &gop,
-                // --- LOW-LATENCY MUXER FLAGS ---
-                // Prevent ffmpeg from buffering TS packets before flushing.
-                "-fflags",
-                "nobuffer",
-                "-flags",
-                "low_delay",
-                "-flush_packets",
-                "1",
-                "-max_delay",
-                "0",
-                "-muxdelay",
-                "0",
-                "-muxpreload",
-                "0",
                 // --- OUTPUT: single MPEG-TS over UDP, must be last arg ---
                 "-f",
                 "mpegts",
