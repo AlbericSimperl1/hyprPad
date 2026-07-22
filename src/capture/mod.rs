@@ -530,11 +530,18 @@ fn run_capture_loop(
     let feeder = std::thread::Builder::new()
         .name("hyprpad-encoder".into())
         .spawn(move || {
-            run_encoder(mailbox_for_feeder, stop_for_feeder, status_for_feeder, path_for_feeder)
+            run_encoder(
+                mailbox_for_feeder,
+                stop_for_feeder,
+                status_for_feeder,
+                path_for_feeder,
+            )
         })
         .expect("spawn encoder feeder");
 
-    let tx = FrameSink { mailbox: Arc::clone(&mailbox) };
+    let tx = FrameSink {
+        mailbox: Arc::clone(&mailbox),
+    };
 
     // Blocks until stop_flag is set or PipeWire dies.
     if let Err(e) = pipewire::run_capture(pw_fd, node_id, tx, Arc::clone(&stop_flag)) {
@@ -583,7 +590,7 @@ fn run_encoder(
 
     let width = first.width;
     let height = first.height;
-    let fps = 30;
+    let fps = 45;
 
     let mut enc = match encoder::Encoder::start(width, height, fps, &output_path) {
         Ok(e) => e,

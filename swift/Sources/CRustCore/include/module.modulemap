@@ -1,0 +1,4 @@
+module CRustCore {
+    header "rust_core.h"
+    export *
+}

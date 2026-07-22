@@ -1,0 +1,16 @@
+.DS_Store
+/.build
+/.swiftpm
+/Packages
+xcuserdata/
+DerivedData/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+
+/xtool
+
+# Rust build artifacts
+/rust_core/target
+/rust_core/Cargo.lock
+/Sources/CRustCore/lib/*.a
